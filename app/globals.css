@@ -1,0 +1,321 @@
+@import "tailwindcss";
+
+/* ---------- Design tokens ---------- */
+:root {
+  --bg: #0b0d10;
+  --surface: #15181d;
+  --surface-2: #1c2027;
+  --line: #272c34;
+  --fg: #f1f1ee;
+  --muted: #868d99;
+  --accent: #e8b84b;
+  --teal: #5fa8a0;
+  --radius: 14px;
+  --ff-display: var(--font-fraunces);
+  --ff-body: var(--font-inter);
+  --ff-mono: var(--font-jetbrains-mono);
+  color-scheme: dark;
+}
+
+/* Easter egg konami : thème rétro façon PS2 / Y2K — bleu nuit chromé et glossy */
+[data-theme="ps2"] {
+  --bg: #050c1f;
+  --surface: #0d1b3d;
+  --surface-2: #142a52;
+  --line: #24437f;
+  --fg: #eaf3ff;
+  --muted: #7fa3d1;
+  --accent: #4fc3f7;
+  --teal: #8b7cf6;
+  --radius: 20px;
+}
+
+/* Le dégradé PS2 ne s'applique que si la scène 3D ne peint pas déjà le fond */
+[data-theme="ps2"]:not([data-scene="active"]) body {
+  background: linear-gradient(180deg, #050c1f 0%, #0d1b3d 55%, #142a52 100%);
+  background-attachment: fixed;
+}
+
+/* Titres en effet « chromé » : dégradé blanc → bleu clair découpé dans le texte */
+[data-theme="ps2"] h1,
+[data-theme="ps2"] h2,
+[data-theme="ps2"] h3,
+[data-theme="ps2"] #index-menu .font-display {
+  background-image: linear-gradient(180deg, #ffffff 0%, #cfe6ff 55%, #7fb3e8 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 14px rgba(127, 179, 232, 0.55), 0 0 28px rgba(79, 195, 247, 0.25);
+}
+
+/* Bouton primaire : reflet glossy façon bulle Aqua */
+[data-theme="ps2"] .btn-primary {
+  background: linear-gradient(180deg, #7fd8ff 0%, #4fc3f7 45%, #2196c9 100%);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 8px 12px -6px rgba(255, 255, 255, 0.55),
+    inset 0 -10px 14px -8px rgba(8, 40, 60, 0.55),
+    0 6px 18px -6px rgba(79, 195, 247, 0.55);
+}
+
+[data-theme="ps2"] .btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+/* Cards, bandeau de statut et toasts : léger reflet glacé en haut */
+[data-theme="ps2"] .rounded-card,
+[data-theme="ps2"] .toast-pill {
+  position: relative;
+}
+
+[data-theme="ps2"] .rounded-card::before,
+[data-theme="ps2"] .toast-pill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 40%);
+  pointer-events: none;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-teal: var(--teal);
+  --font-sans: var(--ff-body);
+  --font-display: var(--ff-display);
+  --font-mono: var(--ff-mono);
+  --radius-card: var(--radius);
+}
+
+/* ---------- Base ---------- */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Le viewport ne scrolle plus : tout le scroll vit dans .reader-column */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  transition: background-color 0.3s ease;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------- Skip link ---------- */
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 120;
+  transform: translateY(-250%);
+  background: var(--accent);
+  color: var(--bg);
+  font-family: var(--ff-mono);
+  font-size: 0.75rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ---------- Scène 3D (The Workbench) ---------- */
+.scene-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  /* couvre le viewport avant la première frame WebGL : aucun flash */
+  background: var(--bg);
+}
+
+/* Sur petit écran le diorama passe derrière le texte : on l'atténue
+   pour préserver la lisibilité (le fond reste opaque, seul le rendu 3D
+   est adouci par un voile) */
+@media (max-width: 700px) {
+  .scene-layer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--bg) 45%, transparent);
+  }
+}
+
+/* La scène peint le fond elle-même ; le body s'efface pour la laisser visible */
+html[data-scene="active"] body {
+  background: transparent;
+}
+
+/* ---------- Colonne de lecture qui contient le site ---------- */
+.reader-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.reader-column {
+  pointer-events: auto;
+  position: relative;
+  width: min(430px, 100vw);
+  height: min(92svh, 930px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--bg);
+  container-type: size;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.reader-column::-webkit-scrollbar {
+  display: none;
+}
+
+.reader-content {
+  position: relative;
+}
+
+/* Mobile : la colonne occupe tout le viewport et laisse voir la scène 3D
+   derrière (le voile de lisibilité s'applique déjà) */
+@media (max-width: 700px) {
+  .reader-column {
+    width: 100vw;
+    height: 100dvh;
+    background: transparent;
+  }
+}
+
+/* ---------- Curseur custom (activé par JS sur pointeur fin uniquement) ---------- */
+html.has-custom-cursor,
+html.has-custom-cursor * {
+  cursor: none !important;
+}
+
+/* Rappel élastique des éléments magnétiques */
+[data-magnetic] {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Grain / noise ---------- */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 105;
+  pointer-events: none;
+  opacity: 0.05;
+  will-change: transform;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 6s steps(8) infinite;
+}
+
+@keyframes grain-shift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  12.5% {
+    transform: translate3d(-5%, -8%, 0);
+  }
+  25% {
+    transform: translate3d(3%, -3%, 0);
+  }
+  37.5% {
+    transform: translate3d(-7%, 4%, 0);
+  }
+  50% {
+    transform: translate3d(5%, 8%, 0);
+  }
+  62.5% {
+    transform: translate3d(-4%, 6%, 0);
+  }
+  75% {
+    transform: translate3d(7%, -6%, 0);
+  }
+  87.5% {
+    transform: translate3d(-6%, 2%, 0);
+  }
+}
+
+/* ---------- Caret terminal ---------- */
+.caret {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.05em;
+  background: var(--accent);
+  vertical-align: text-bottom;
+  animation: caret-blink 1.1s steps(2, start) infinite;
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ---------- Rail natif (mobile / tactile) : scrollbar discrète ---------- */
+.rail-native {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ---------- Loader : sauté si reduced-motion ou déjà booté cette session ---------- */
+html[data-booted] #loader {
+  display: none;
+}
+
+/* ---------- prefers-reduced-motion : contenu visible, zéro animation ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reader-column {
+    scroll-behavior: auto;
+  }
+
+  #loader {
+    display: none;
+  }
+
+  .grain,
+  .caret {
+    animation: none;
+  }
+
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
