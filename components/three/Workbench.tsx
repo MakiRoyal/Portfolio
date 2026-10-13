@@ -11,8 +11,8 @@ import { CAMERA_ZOOM, type ChoreoState } from "./choreography";
 import DataCylinder from "./props/DataCylinder";
 import Monitor from "./props/Monitor";
 
-/** Largeur max de la colonne de lecture (doit suivre .reader-column dans globals.css). */
-const READER_MAX_WIDTH = 430;
+/** Largeur max de la colonne de contenu (doit suivre .reader-content dans globals.css). */
+const READER_MAX_WIDTH = 1280;
 
 /** Arcs lumineux entre le moniteur et le cylindre — la « glue full-stack ». */
 const CONNECTORS: {

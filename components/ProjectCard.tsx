@@ -11,10 +11,7 @@ export default function ProjectCard({
   const accentGlow = project.accent === "teal" ? "bg-teal/10" : "bg-accent/10";
 
   return (
-    <article
-      data-rail-item
-      className="flex w-[min(82cqw,340px)] shrink-0 snap-start flex-col overflow-hidden rounded-card border border-line bg-surface"
-    >
+    <article className="flex w-[min(82cqw,340px)] shrink-0 snap-start flex-col overflow-hidden rounded-card border border-line bg-surface">
       <div className="relative flex aspect-[16/9] select-none items-end justify-between overflow-hidden border-b border-line bg-surface-2 p-4">
         <div
           aria-hidden
@@ -53,10 +50,9 @@ export default function ProjectCard({
               href={project.links.github}
               target="_blank"
               rel="noreferrer noopener"
-              draggable={false}
               data-hover
               data-label="github"
-              className="font-mono text-xs uppercase tracking-widest underline-offset-4 transition-colors hover:text-accent hover:underline"
+              className="inline-flex min-h-11 items-center font-mono text-xs uppercase tracking-widest underline-offset-4 transition-colors hover:text-accent hover:underline focus-visible:text-accent focus-visible:underline"
             >
               code ↗
             </a>
@@ -66,10 +62,9 @@ export default function ProjectCard({
               href={project.links.demo}
               target="_blank"
               rel="noreferrer noopener"
-              draggable={false}
               data-hover
               data-label="démo"
-              className="font-mono text-xs uppercase tracking-widest underline-offset-4 transition-colors hover:text-accent hover:underline"
+              className="inline-flex min-h-11 items-center font-mono text-xs uppercase tracking-widest underline-offset-4 transition-colors hover:text-accent hover:underline focus-visible:text-accent focus-visible:underline"
             >
               démo ↗
             </a>

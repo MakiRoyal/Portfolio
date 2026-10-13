@@ -163,7 +163,7 @@ export default function IndexNav() {
                 href={`mailto:${profile.email}`}
                 data-hover
                 data-label="écrire"
-                className="transition-colors hover:text-fg"
+                className="inline-flex min-h-11 items-center underline-offset-4 transition-colors hover:text-fg hover:underline focus-visible:text-fg focus-visible:underline"
               >
                 {profile.email}
               </a>

@@ -14,10 +14,10 @@ npm run build    # build de production (prêt pour Vercel)
 
 - **Boot terminal** au chargement (passable au clic/Échap, joué une fois par session, sauté si `prefers-reduced-motion`)
 - **Menu index** plein écran (burger en haut à droite, focus trap, Échap)
-- **Drag-to-explore** horizontal des projets avec inertie — molette et ← → au clavier ; scroll natif sur tactile
+- **Galerie de projets** en scroll horizontal natif avec scroll-snap
 - **Curseur magnétique** avec label contextuel (`data-hover` / `data-label` / `data-magnetic`) — désactivé sur tactile
 - **Konami code** ↑ ↑ ↓ ↓ ← → ← → B A : thème rétro Game Boy
-- **Barres de compétences RPG** animées à l’entrée dans le viewport
+- **Badges de rang RPG** (S/A/B/C) pour les compétences, animés à l’entrée dans le viewport
 - Grain SVG en overlay, barre de progression de scroll
 
 ## Où modifier le contenu

@@ -15,10 +15,12 @@ export interface Project {
   accent: "amber" | "teal";
 }
 
+export type SkillRank = "S" | "A" | "B" | "C";
+
 export interface Skill {
   name: string;
-  /** 0–100, façon fiche de personnage RPG */
-  level: number;
+  /** Rang façon fiche de personnage RPG — S le plus maîtrisé, C des notions */
+  rank: SkillRank;
   note?: string;
 }
 

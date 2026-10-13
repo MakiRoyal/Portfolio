@@ -8,8 +8,8 @@
   --line: #272c34;
   --fg: #f1f1ee;
   --muted: #868d99;
-  --accent: #e8b84b;
-  --teal: #5fa8a0;
+  --accent: #ffab1f;
+  --teal: #2dd4bf;
   --radius: 14px;
   --ff-display: var(--font-fraunces);
   --ff-body: var(--font-inter);
@@ -144,6 +144,35 @@ body {
   transform: translateY(0);
 }
 
+/* ---------- Hero : nom en dégradé signature ---------- */
+.hero-name {
+  background-image: linear-gradient(115deg, var(--fg) 0%, var(--accent) 55%, var(--teal) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 26px color-mix(in srgb, var(--accent) 35%, transparent));
+}
+
+/* ---------- Bouton primaire : glow chaleureux ---------- */
+.btn-primary {
+  box-shadow: 0 10px 32px -10px color-mix(in srgb, var(--accent) 60%, transparent);
+  transition:
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.25s ease,
+    filter 0.25s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 42px -10px color-mix(in srgb, var(--accent) 75%, transparent);
+  filter: brightness(1.08);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
 /* ---------- Scène 3D (The Workbench) ---------- */
 .scene-layer {
   position: fixed;
@@ -171,25 +200,13 @@ html[data-scene="active"] body {
   background: transparent;
 }
 
-/* ---------- Colonne de lecture qui contient le site ---------- */
-.reader-stage {
+/* ---------- Conteneur de scroll (plein viewport) ---------- */
+.reader-column {
   position: fixed;
   inset: 0;
   z-index: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.reader-column {
-  pointer-events: auto;
-  position: relative;
-  width: min(430px, 100vw);
-  height: min(92svh, 930px);
   overflow-y: auto;
   overscroll-behavior: contain;
-  background: var(--bg);
   container-type: size;
   scroll-behavior: smooth;
   scrollbar-width: none;
@@ -199,16 +216,20 @@ html[data-scene="active"] body {
   display: none;
 }
 
+/* La colonne de contenu occupe la largeur de page, plafonnée pour rester
+   lisible ; le diorama 3D anime les marges visibles au-delà. */
 .reader-content {
   position: relative;
+  max-width: 1280px;
+  margin-inline: auto;
+  background: var(--bg);
 }
 
-/* Mobile : la colonne occupe tout le viewport et laisse voir la scène 3D
-   derrière (le voile de lisibilité s'applique déjà) */
+/* Sous ~1280px il n'y a plus de marge : le contenu occupe tout le viewport.
+   En dessous de 700px on laisse le fond transparent pour que la scène 3D
+   reste visible derrière (le voile de lisibilité s'applique déjà). */
 @media (max-width: 700px) {
-  .reader-column {
-    width: 100vw;
-    height: 100dvh;
+  .reader-content {
     background: transparent;
   }
 }

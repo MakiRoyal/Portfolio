@@ -1,6 +1,6 @@
 /**
  * État partagé DOM ↔ canvas, muté chaque frame — même convention impérative
- * que useDragRail/CustomCursor : aucun re-render React sur le chemin chaud.
+ * que CustomCursor : aucun re-render React sur le chemin chaud.
  */
 export interface ChoreoTargets {
   /**

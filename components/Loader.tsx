@@ -36,12 +36,17 @@ export default function Loader() {
   }, []);
 
   // Skip : reduced-motion (le CSS masque déjà le loader) ou déjà booté cette session.
+  // Le flag est posé de façon synchrone (pas seulement l'évènement de finish())
+  // car Loader est monté avant tout consommateur de useBootComplete() : son propre
+  // effet de montage doit pouvoir lire le flag plutôt que risquer de manquer
+  // l'évènement si les deux effets se déclenchent dans le même commit.
   useEffect(() => {
     if (reduced || document.documentElement.dataset.booted) {
-      doneRef.current = true;
+      document.documentElement.dataset.booted = "1";
+      finish();
       setVisible(false);
     }
-  }, [reduced]);
+  }, [reduced, finish]);
 
   // Verrouille le scroll pendant le boot.
   useEffect(() => {

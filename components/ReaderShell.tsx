@@ -5,24 +5,15 @@ import type { ReactNode } from "react";
 import { useScrollShellRef } from "./ScrollShell";
 
 /**
- * Colonne de lecture qui contient le site — c'est le conteneur de scroll.
- * Le diorama 3D évolue librement dans les marges de part et d'autre.
- * Le contenu reste du vrai HTML crawlable/accessible.
+ * Conteneur de scroll plein viewport qui porte le contenu du site — le
+ * diorama 3D évolue dans les marges visuelles de part et d'autre de la
+ * colonne de contenu. Le contenu reste du vrai HTML crawlable/accessible.
+ * La molette est nativement gérée par ce conteneur (il couvre tout le
+ * viewport) ; seul le clavier a besoin d'un relais, car html/body sont en
+ * overflow:hidden pour laisser ce conteneur porter seul le scroll.
  */
 export default function ReaderShell({ children }: { children: ReactNode }) {
   const columnRef = useScrollShellRef();
-
-  // molette dans les marges (hors colonne) → scroll de la colonne
-  useEffect(() => {
-    const onWheel = (event: WheelEvent) => {
-      const column = columnRef.current;
-      if (!column) return;
-      if (event.target instanceof Node && column.contains(event.target)) return;
-      column.scrollBy({ top: event.deltaY });
-    };
-    window.addEventListener("wheel", onWheel, { passive: true });
-    return () => window.removeEventListener("wheel", onWheel);
-  }, [columnRef]);
 
   // clavier quand rien n'a le focus (body) → scroll de la colonne
   useEffect(() => {
@@ -66,10 +57,8 @@ export default function ReaderShell({ children }: { children: ReactNode }) {
   }, [columnRef]);
 
   return (
-    <div className="reader-stage">
-      <div ref={columnRef} className="reader-column">
-        <div className="reader-content">{children}</div>
-      </div>
+    <div ref={columnRef} className="reader-column">
+      <div className="reader-content">{children}</div>
     </div>
   );
 }

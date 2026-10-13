@@ -104,33 +104,33 @@ export const skillCategories: SkillCategory[] = [
     title: "Frontend",
     code: "FRT",
     skills: [
-      { name: "React", level: 90 },
-      { name: "Next.js", level: 85 },
-      { name: "TypeScript", level: 85 },
+      { name: "React", rank: "S" },
+      { name: "Next.js", rank: "A" },
+      { name: "TypeScript", rank: "A" },
     ],
   },
   {
     title: "Mobile",
     code: "MOB",
     skills: [
-      { name: "React Native", level: 88 },
-      { name: "Expo", level: 85 },
+      { name: "React Native", rank: "A" },
+      { name: "Expo", rank: "A" },
     ],
   },
   {
     title: "Backend",
     code: "BCK",
     skills: [
-      { name: "Python · FastAPI", level: 75 },
-      { name: "Java · Spring Boot", level: 72 },
+      { name: "Python · FastAPI", rank: "B" },
+      { name: "Java · Spring Boot", rank: "B" },
     ],
   },
   {
     title: "Data & Infra",
     code: "OPS",
     skills: [
-      { name: "PostgreSQL", level: 80 },
-      { name: "Supabase", level: 82 },
+      { name: "PostgreSQL", rank: "A" },
+      { name: "Supabase", rank: "A" },
     ],
   },
 ];
